@@ -9,6 +9,7 @@ from IPython.display import display, Image
 from sklearn.linear_model import LogisticRegression
 from six.moves.urllib.request import urlretrieve
 from six.moves import cPickle as pickle
+from collections import namedtuple
 
 url = 'https://commondatastorage.googleapis.com/books1000/'
 last_percent_reported = None
@@ -253,12 +254,15 @@ with open(pickle_file, 'rb') as f:
 # excluded for now
 
 # Problem 6 - try an off the shelf classifier on the data - Logistical Regression
+# valid_dataset is a numpy array of shape (valid_size, img_size, img_size),
+# and it's values are an index to an image, floating point values in a img_size by img_size matrix representing the pixels
 """
 logreg = LogisticRegression(C=1e5, solver='lbfgs', multi_class='multinomial')
 
 with open(pickle_file, 'rb') as f:
   data = pickle.load(f)  # unpickle
-  indices = len(data)
-  for i in range (indices):
-    logreg.fit(train_dataset[i, :, :], train_labels)
+  indices = len(data.valid_datatset)
+
+logreg.fit((train_dataset, (len(train_dataset), 28*28)), (train_labels, (len(train_labels),)))
 """
+
