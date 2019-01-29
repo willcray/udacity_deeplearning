@@ -256,13 +256,42 @@ with open(pickle_file, 'rb') as f:
 # Problem 6 - try an off the shelf classifier on the data - Logistical Regression
 # valid_dataset is a numpy array of shape (valid_size, img_size, img_size),
 # and it's values are an index to an image, floating point values in a img_size by img_size matrix representing the pixels
-"""
-logreg = LogisticRegression(C=1e5, solver='lbfgs', multi_class='multinomial')
+
+# unpack the data from the pickle file
+pickle_file  = 'notMNIST.pickle'
 
 with open(pickle_file, 'rb') as f:
-  data = pickle.load(f)  # unpickle
-  indices = len(data.valid_datatset)
+  save = pickle.load(f)
+  train_dataset = save['train_dataset']
+  train_labels = save['train_labels']
+  valid_dataset = save['valid_dataset']
+  valid_labels = save['valid_labels']
+  test_dataset = save['test_dataset']
+  test_labels = save['test_labels']
+  del save  # hint to help gc free up memory
+  print('Training set', train_dataset.shape, train_labels.shape)
+  print('Validation set', valid_dataset.shape, valid_labels.shape)
+  print('Test set', test_dataset.shape, test_labels.shape)
 
-logreg.fit((train_dataset, (len(train_dataset), 28*28)), (train_labels, (len(train_labels),)))
-"""
+logreg = LogisticRegression()
+# train and validate first
+def train_val(sample_size):
+  X_train = train_dataset[:sample_size].reshape(sample_size, image_size * image_size)
+  y_train = train_labels[:sample_size]
+  logreg.fit(X_train, y_train)
+  print("Train:", logreg.score(X_train, y_train))
 
+  X_val = valid_dataset[:sample_size].reshape(sample_size, image_size * image_size)
+  y_val = valid_labels[:sample_size]
+  print("Val:", logreg.score(X_val, y_val))
+
+train_val(500)
+train_val(1000)
+
+# test last
+def test(sample_size):
+  X_test = test_dataset[:sample_size].reshape(sample_size, image_size * image_size)
+  y_test = test_labels[:sample_size]
+  print("Test:", logreg.score(X_test, y_test))
+
+test(1000)
