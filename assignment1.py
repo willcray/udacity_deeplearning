@@ -285,8 +285,10 @@ def train_val(sample_size):
   y_val = valid_labels[:sample_size]
   print("Val:", logreg.score(X_val, y_val))
 
-train_val(500)
+train_val(50)
+train_val(100)
 train_val(1000)
+train_val(5000)
 
 # test last
 def test(sample_size):
